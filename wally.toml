@@ -1,0 +1,14 @@
+[package]
+name = "DataEncoded/untitled-pirate-game"
+version = "0.1.0"
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
+
+[dependencies]
+knit = "sleitnick/knit@1.4.3"
+promise = "evaera/promise@3.2.1"
+janitor = "howmanysmall/janitor@1.13.15"
+signal = "sleitnick/signal@^1"
+symbol = "sleitnick/symbol@^2"
+component = "sleitnick/component@^2"
+option = "sleitnick/option@^1"
