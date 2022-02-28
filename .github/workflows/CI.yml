@@ -1,12 +1,14 @@
-name: Lint
+name: CI
 
 on:
   push:
     branches:
     - master
+    - dev
   pull_request:
     branches:
     - master
+    - dev
 
 jobs:
   lint:
@@ -26,3 +28,18 @@ jobs:
 
       - name: Run Selene
         run: selene src
+
+  format:
+    name: format
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: Roblox/setup-foreman@v1
+        with:
+          version: "^1.0.0"
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check Formatting
+        run: stylua --check src
