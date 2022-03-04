@@ -2,6 +2,6 @@ local Knit = require(game:GetService("ReplicatedStorage").Packages.knit)
 
 Knit.Start()
 	:andThen(function()
-		print("[ KNIT ] SERVER STARTED")
+		print("[ KNIT ] CLIENT STARTED")
 	end)
 	:catch(warn)
