@@ -55,10 +55,9 @@ function PlayerShipCreatorService:KnitInit()
 	Players.PlayerRemoving:Connect(function(player)
 		local playerShips = returnTaggedAttribute("PlayerShip", "UserId", player.UserId)
 
-        for _, ship in ipairs(playerShips) do
-            ship:Destroy()
-        end
-
+		for _, ship in ipairs(playerShips) do
+			ship:Destroy()
+		end
 	end)
 end
 
@@ -67,17 +66,16 @@ end
 --Listen to the respawn signal and ensure a ship can be spawned
 function PlayerShipCreatorService:KnitStart()
 	self.Client.Respawn:Connect(function(player)
-        if #returnTaggedAttribute("PlayerShip", "UserId", player.UserId) == 0 then
-            --TODO: Ship Selection
-            local clone = ReplicatedStorage.Assets.Ships.Raft:Clone()
+		if #returnTaggedAttribute("PlayerShip", "UserId", player.UserId) == 0 then
+			--TODO: Ship Selection
+			local clone = ReplicatedStorage.Assets.Ships.Raft:Clone()
 
-            CollectionService:AddTag(clone, "PlayerShip")
-            clone:SetAttribute("UserId", player.UserId)
-		
-            --TODO: Location Selection
-            clone.Parent = Workspace
+			CollectionService:AddTag(clone, "PlayerShip")
+			clone:SetAttribute("UserId", player.UserId)
 
-        end
+			--TODO: Location Selection
+			clone.Parent = Workspace
+		end
 	end)
 end
 
