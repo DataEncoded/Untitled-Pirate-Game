@@ -76,7 +76,9 @@ function PlayerShipCreatorService:KnitStart()
 			--TODO: Location Selection
 			clone.Parent = Workspace
 
-            clone:SetNetworkOwner(player)
+			clone.Anchored = false
+
+			clone:SetNetworkOwner(player)
 		end
 	end)
 end
