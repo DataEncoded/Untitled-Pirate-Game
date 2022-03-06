@@ -70,8 +70,8 @@ function PlayerShipCreatorService:KnitStart()
 			--TODO: Ship Selection
 			local clone = ReplicatedStorage.Assets.Ships.Raft:Clone()
 
+            clone:SetAttribute("UserId", player.UserId)
 			CollectionService:AddTag(clone, "PlayerShip")
-			clone:SetAttribute("UserId", player.UserId)
 
 			--TODO: Location Selection
 			clone.Parent = Workspace
