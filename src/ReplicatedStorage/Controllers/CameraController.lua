@@ -15,13 +15,25 @@ local totalSpinY = 0
 local function Bind()
 	local character = player.Character
 	local root = character and character.PrimaryPart
-	local delta = UserInputService:GetMouseDelta()
 
-	if not character then
+	if not root then
 		return
 	end
 
-	totalSpinY += delta.X * 0.5
+	local delta = UserInputService:GetMouseDelta()
+	local deltaX = delta.X * 0.5
+
+	local gamepadState = UserInputService:GetGamepadState(Enum.UserInputType.Gamepad1)
+	local states = {}
+	for _, state in pairs(gamepadState) do
+		if state.KeyCode.Name == "Thumbstick2" then
+			delta = state.Position
+			deltaX = state.Position.X
+			break
+		end
+	end
+
+	totalSpinY += deltaX
 	local rootCFrame = CFrame.new(root.Position) * CFrame.Angles(0, math.rad(totalSpinY), 0)
 	local cameraPosition = (rootCFrame * cameraOffset).Position
 	camera.CFrame = CFrame.lookAt(cameraPosition, rootCFrame.Position)
