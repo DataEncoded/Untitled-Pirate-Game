@@ -23,13 +23,14 @@ local function Bind()
 	local delta = UserInputService:GetMouseDelta()
 	local deltaX = delta.X * 0.5
 
-	local gamepadState = UserInputService:GetGamepadState(Enum.UserInputType.Gamepad1)
-	local states = {}
-	for _, state in pairs(gamepadState) do
-		if state.KeyCode.Name == "Thumbstick2" then
-			delta = state.Position
-			deltaX = state.Position.X
-			break
+	if UserInputService.GamepadEnabled then
+		local gamepadState = UserInputService:GetGamepadState(Enum.UserInputType.Gamepad1)
+		for _, state in pairs(gamepadState) do
+			if state.KeyCode.Name == "Thumbstick2" then
+				delta = state.Position
+				deltaX = state.Position.X
+				break
+			end
 		end
 	end
 
