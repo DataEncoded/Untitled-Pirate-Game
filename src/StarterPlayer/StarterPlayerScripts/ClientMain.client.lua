@@ -1,7 +1,6 @@
 local Knit = require(game:GetService("ReplicatedStorage").Packages.knit)
 local Loader = require(game:GetService("ReplicatedStorage").Packages.loader)
 
-script.Parent:WaitForChild("Controller")
 Knit.AddControllersDeep(game:GetService("ReplicatedStorage").Controllers)
 
 --Knit start, print status and then load components
