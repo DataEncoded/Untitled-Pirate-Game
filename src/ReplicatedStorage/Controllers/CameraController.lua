@@ -28,7 +28,7 @@ local function Bind()
 		for _, state in pairs(gamepadState) do
 			if state.KeyCode.Name == "Thumbstick2" then
 				delta = state.Position
-				deltaX = state.Position.X
+				deltaX = state.Position.X * 0.5
 				break
 			end
 		end
