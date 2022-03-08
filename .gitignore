@@ -5,6 +5,9 @@
 /*.rbxlx.lock
 /*.rbxl.lock
 
+# Ignore build file
+/build.rbxl
+
 # Wally package folder and lock
 /Packages
 /wally.lock
