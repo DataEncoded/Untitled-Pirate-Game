@@ -79,6 +79,8 @@ function PlayerShipCreatorService:KnitStart()
 			clone.Anchored = false
 
 			clone:SetNetworkOwner(player)
+
+			self.Client.Respawn:Fire(player, clone)
 		end
 	end)
 end
