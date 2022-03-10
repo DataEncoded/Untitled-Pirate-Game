@@ -15,6 +15,10 @@ function PlayerShipMovementController.getInputRelativeToCamera(object)
     return cameraCframe:VectorToWorldSpace(ControlModule:GetMoveVector())
 end
 
+function PlayerShipMovementController.moveVector()
+    return ControlModule:GetMoveVector()
+end
+
 function PlayerShipMovementController:KnitStart()
     local creator = Knit.GetService("PlayerShipCreatorService")
     creator.Respawn:Fire()
