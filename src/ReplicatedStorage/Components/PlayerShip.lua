@@ -35,12 +35,22 @@ function PlayerShip:Construct()
         physicsToInput.Responsiveness = 25
         shipToPhysics.Responsiveness = 8
 
-        local align = Instance.new("AlignOrientation")
 
-        align.Attachment0 = shipAttachment
-        align.Attachment1 = self.inputAttachment
+        self.alignPart = Instance.new("Part")
+        self.alignPart.Parent = workspace
 
-        align.Parent = self.Instance
+        self.alignPart.Anchored = true
+
+        self.alignPart.Transparency = 1
+        
+        local alignAttachment = Instance.new("Attachment", self.alignPart)
+
+        self.shipToAlign = Instance.new("AlignOrientation")
+
+        self.shipToAlign.Attachment0 = shipAttachment
+        self.shipToAlign.Attachment1 = alignAttachment
+
+        self.shipToAlign.Parent = self.Instance
 
         self.Instance.CanCollide = false
     
@@ -49,23 +59,29 @@ end
 
 local function renderStep(self, dt)
 
-    local relativePosition = Knit.GetController("PlayerShipMovementController").getInputRelativeToCamera(self.Instance)
-
-    
-    print(Knit.GetController("PlayerShipMovementController").moveVector() == Vector3.new(0, 0, 0))
+    local velocity = Knit.GetController("PlayerShipMovementController").getInputRelativeToCamera(self.Instance)
 
     self.physicsPart.Position = Vector3.new(self.physicsPart.Position.X, 0, self.physicsPart.Position.Z)
 
     self.Instance.Position = self.Instance.Position * Vector3.new(1, 0, 1)
 
-    --self.Instance.CFrame = CFrame.new(self.Instance.CFrame.Position, self.inputAttachment.WorldPosition)
 
-    local position = relativePosition * Vector3.new(5, 1, 5) + self.Instance.Position
+    local position = velocity * Vector3.new(5, 1, 5) + self.Instance.Position
 
-    self.inputAttachment.WorldCFrame = CFrame.new(position)
+    self.inputAttachment.WorldCFrame = CFrame.new(position, velocity)
 
+    if Knit.GetController("PlayerShipMovementController").moveVector() == Vector3.new(0, 0, 0) then
+        --self.shipToAlign.Enabled = false
+    else
+        self.alignPart.CFrame = CFrame.lookAt(self.Instance.Position, self.inputAttachment.WorldPosition) * CFrame.Angles(0, math.rad(180), 0)
 
-    
+        --self.shipToAlign.Enabled = true
+    end
+
+    --self.alignPart.CFrame = CFrame.lookAt(self.Instance.Position, self.physicsPart.Position)
+
+    --self.shipToAlign.Enabled = Knit.GetController("PlayerShipMovementController").moveVector() == Vector3.new(0, 0, 0)
+    --self.Instance.CFrame = CFrame.new(self.Instance.CFrame.Position, self.Instance.Position + self.Instance.Velocity)
 
 end
 
