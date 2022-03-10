@@ -2,98 +2,84 @@ local Knit = require(game:GetService("ReplicatedStorage").Packages.knit)
 local Workspace = game:GetService("Workspace")
 local Component = require(game:GetService("ReplicatedStorage").Packages.component)
 
-local PlayerShip = Component.new {Tag = "PlayerShip"}
+local PlayerShip = Component.new({ Tag = "PlayerShip" })
 
 function PlayerShip:Construct()
-    if self.Instance:GetAttribute("UserId") == game.Players.LocalPlayer.UserId then
-        self.control = true
-        self.inputAttachment = Instance.new("Attachment", Workspace.Terrain)
-        self.physicsPart = Instance.new("Part")
-        self.physicsAttachment = Instance.new("Attachment", self.physicsPart)
+	if self.Instance:GetAttribute("UserId") == game.Players.LocalPlayer.UserId then
+		self.control = true
+		self.inputAttachment = Instance.new("Attachment", Workspace.Terrain)
+		self.physicsPart = Instance.new("Part")
+		self.physicsAttachment = Instance.new("Attachment", self.physicsPart)
 
-        local shipAttachment = Instance.new("Attachment", self.Instance)
+		local shipAttachment = Instance.new("Attachment", self.Instance)
 
-        local physicsToInput = Instance.new("AlignPosition")
+		local physicsToInput = Instance.new("AlignPosition")
 
-        physicsToInput.Attachment0 = self.physicsAttachment
-        physicsToInput.Attachment1 = self.inputAttachment
+		physicsToInput.Attachment0 = self.physicsAttachment
+		physicsToInput.Attachment1 = self.inputAttachment
 
-        physicsToInput.Parent = self.physicsAttachment
+		physicsToInput.Parent = self.physicsAttachment
 
-        self.physicsPart.Parent = workspace
-        self.physicsPart.CanCollide = false
+		self.physicsPart.Parent = workspace
+		self.physicsPart.CanCollide = false
 
-        self.physicsPart.Transparency = 1
-        
-        local shipToPhysics = Instance.new("AlignPosition")
+		self.physicsPart.Transparency = 1
 
-        shipToPhysics.Attachment0 = shipAttachment
-        shipToPhysics.Attachment1 = self.physicsAttachment
+		local shipToPhysics = Instance.new("AlignPosition")
 
-        shipToPhysics.Parent = self.Instance
+		shipToPhysics.Attachment0 = shipAttachment
+		shipToPhysics.Attachment1 = self.physicsAttachment
 
-        physicsToInput.Responsiveness = 25
-        shipToPhysics.Responsiveness = 8
+		shipToPhysics.Parent = self.Instance
 
+		physicsToInput.Responsiveness = 25
+		shipToPhysics.Responsiveness = 8
 
-        self.alignPart = Instance.new("Part")
-        self.alignPart.Parent = workspace
+		self.alignPart = Instance.new("Part")
+		self.alignPart.Parent = workspace
 
-        self.alignPart.Anchored = true
+		self.alignPart.Anchored = true
 
-        self.alignPart.Transparency = 1
-        
-        local alignAttachment = Instance.new("Attachment", self.alignPart)
+		self.alignPart.Transparency = 1
 
-        self.shipToAlign = Instance.new("AlignOrientation")
+		local alignAttachment = Instance.new("Attachment", self.alignPart)
 
-        self.shipToAlign.Attachment0 = shipAttachment
-        self.shipToAlign.Attachment1 = alignAttachment
+		self.shipToAlign = Instance.new("AlignOrientation")
 
-        self.shipToAlign.Parent = self.Instance
+		self.shipToAlign.Attachment0 = shipAttachment
+		self.shipToAlign.Attachment1 = alignAttachment
 
-        self.Instance.CanCollide = false
-    
-    end
+		self.shipToAlign.Parent = self.Instance
+
+		self.Instance.CanCollide = false
+	end
 end
 
 local function renderStep(self, dt)
+	local velocity = Knit.GetController("PlayerShipMovementController").getInputRelativeToCamera(self.Instance)
 
-    local velocity = Knit.GetController("PlayerShipMovementController").getInputRelativeToCamera(self.Instance)
+	self.physicsPart.Position = Vector3.new(self.physicsPart.Position.X, 0, self.physicsPart.Position.Z)
 
-    self.physicsPart.Position = Vector3.new(self.physicsPart.Position.X, 0, self.physicsPart.Position.Z)
+	self.Instance.Position = self.Instance.Position * Vector3.new(1, 0, 1)
 
-    self.Instance.Position = self.Instance.Position * Vector3.new(1, 0, 1)
+	local position = velocity * Vector3.new(5, 1, 5) + self.Instance.Position
 
+	self.inputAttachment.WorldCFrame = CFrame.new(position, velocity)
 
-    local position = velocity * Vector3.new(5, 1, 5) + self.Instance.Position
-
-    self.inputAttachment.WorldCFrame = CFrame.new(position, velocity)
-
-    if Knit.GetController("PlayerShipMovementController").moveVector() == Vector3.new(0, 0, 0) then
-        --self.shipToAlign.Enabled = false
-    else
-        self.alignPart.CFrame = CFrame.lookAt(self.Instance.Position, self.inputAttachment.WorldPosition) * CFrame.Angles(0, math.rad(180), 0)
-
-        --self.shipToAlign.Enabled = true
-    end
-
-    --self.alignPart.CFrame = CFrame.lookAt(self.Instance.Position, self.physicsPart.Position)
-
-    --self.shipToAlign.Enabled = Knit.GetController("PlayerShipMovementController").moveVector() == Vector3.new(0, 0, 0)
-    --self.Instance.CFrame = CFrame.new(self.Instance.CFrame.Position, self.Instance.Position + self.Instance.Velocity)
-
+	if not (Knit.GetController("PlayerShipMovementController").moveVector() == Vector3.new(0, 0, 0)) then
+		self.alignPart.CFrame = CFrame.lookAt(self.Instance.Position, self.inputAttachment.WorldPosition)
+			* CFrame.Angles(0, math.rad(180), 0)
+	end
 end
 
 function PlayerShip:Start()
-    if self.control then
-        self.RenderPriority = Enum.RenderPriority.Input.Value
+	if self.control then
+		self.RenderPriority = Enum.RenderPriority.Input.Value
 
-        function PlayerShip:RenderSteppedUpdate(dt)
-            renderStep(self, dt)
-        end
-
-    end
+		function PlayerShip:RenderSteppedUpdate(dt)
+			renderStep(self, dt)
+		end
+	end
 end
 
 return PlayerShip
