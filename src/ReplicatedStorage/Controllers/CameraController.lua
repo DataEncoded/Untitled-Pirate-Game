@@ -7,14 +7,12 @@ local CameraController = Knit.CreateController({
 	Name = "CameraController",
 })
 
-local player
 local camera = workspace.CurrentCamera
 local cameraOffset = CFrame.new(30, 50, 30) -- This will change based off what ship they have equipped
 local totalSpinY = 0
 
-local function Bind()
-	local character = player.Character
-	local root = character and character.PrimaryPart
+local function Bind(partToBind)
+	local root = partToBind
 
 	if not root then
 		return
@@ -40,11 +38,12 @@ local function Bind()
 	camera.CFrame = CFrame.lookAt(cameraPosition, rootCFrame.Position)
 end
 
+function CameraController:BindToPart(partToBind)
+	RunService:BindToRenderStep("IsometricCamera", Enum.RenderPriority.Camera.Value + 1, Bind(partToBind))
+end
+
 function CameraController:KnitStart() end
 
-function CameraController:KnitInit()
-	player = game.Players.LocalPlayer
-	RunService:BindToRenderStep("IsometricCamera", Enum.RenderPriority.Camera.Value + 1, Bind)
-end
+function CameraController:KnitInit() end
 
 return CameraController
