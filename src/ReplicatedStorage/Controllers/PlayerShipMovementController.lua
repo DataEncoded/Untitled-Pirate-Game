@@ -23,6 +23,11 @@ end
 
 function PlayerShipMovementController:KnitStart()
 	local creator = Knit.GetService("PlayerShipCreatorService")
+
+	local shipListener = creator.Respawn:Connect(function(clone)
+		Knit.GetController("CameraController"):BindToPart(clone)
+	end)
+
 	creator.Respawn:Fire()
 end
 

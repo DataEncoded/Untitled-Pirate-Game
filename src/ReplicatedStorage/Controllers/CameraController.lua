@@ -39,7 +39,9 @@ local function Bind(partToBind)
 end
 
 function CameraController:BindToPart(partToBind)
-	RunService:BindToRenderStep("IsometricCamera", Enum.RenderPriority.Camera.Value + 1, Bind(partToBind))
+	RunService:BindToRenderStep("IsometricCamera", Enum.RenderPriority.Camera.Value + 1, function(dt)
+		Bind(partToBind, dt)
+	end)
 end
 
 function CameraController:KnitStart() end
