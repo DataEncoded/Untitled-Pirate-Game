@@ -2,6 +2,8 @@ local Knit = require(game:GetService("ReplicatedStorage").Packages.knit)
 local Workspace = game:GetService("Workspace")
 local Component = require(game:GetService("ReplicatedStorage").Packages.component)
 
+local RunService = game:GetService("RunService")
+
 local PlayerShip = Component.new({ Tag = "PlayerShip" })
 
 function PlayerShip:Construct()
@@ -57,7 +59,6 @@ end
 
 local function renderStep(self, dt)
 	local velocity = Knit.GetController("PlayerShipMovementController").getInputRelativeToCamera(self.Instance)
-
 	self.physicsPart.Position = Vector3.new(self.physicsPart.Position.X, 0, self.physicsPart.Position.Z)
 
 	self.Instance.Position = self.Instance.Position * Vector3.new(1, 0, 1)
@@ -76,9 +77,9 @@ function PlayerShip:Start()
 	if self.control then
 		self.RenderPriority = Enum.RenderPriority.Input.Value
 
-		function PlayerShip:RenderSteppedUpdate(dt)
+		RunService:BindToRenderStep("ShipControl", Enum.RenderPriority.Input.Value, function(dt)
 			renderStep(self, dt)
-		end
+		end)
 	end
 end
 
