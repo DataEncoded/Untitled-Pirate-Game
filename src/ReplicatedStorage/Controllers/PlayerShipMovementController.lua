@@ -12,9 +12,10 @@ local camera = Workspace.CurrentCamera
 --Get the input direction of an object relative to the camera
 function PlayerShipMovementController.getInputRelativeToCamera(object)
 	--Ensure there is no rotation from the Y value
-	local cameraCframe = CFrame.new(Vector3.new(camera.CFrame.Position.X, object.Position.Y, camera.CFrame.Position.Z))
+	local cameraCframe = CFrame.new(Vector3.new(camera.CFrame.Position.X, object.Position.Y, camera.CFrame.Position.Z)) * camera.CFrame.Rotation
 
 	return cameraCframe:VectorToWorldSpace(ControlModule:GetMoveVector())
+	--return camera.CFrame:VectorToWorldSpace(ControlModule:GetMoveVector())
 end
 
 function PlayerShipMovementController.moveVector()
