@@ -10,7 +10,10 @@ local RespawnButton
 
 function UIController:KnitStart()
 	local PlayerShipCreatorService = Knit.GetService("PlayerShipCreatorService")
-	print(PlayerShipCreatorService.Client)
+
+	PlayerShipCreatorService.Respawn:Connect(function(clone)
+		Knit.GetController("CameraController"):BindToPart(clone)
+	end)
 
 	RespawnButton.MouseButton1Click:Connect(function()
 		PlayerShipCreatorService.Respawn:Fire()
