@@ -1,7 +1,6 @@
 --Get Packages
 local Knit = require(game:GetService("ReplicatedStorage").Packages.knit)
 local Workspace = game:GetService("Workspace")
-local Option = require(game:GetService("ReplicatedStorage").Packages.option)
 
 --Get Services
 local CollectionService = game:GetService("CollectionService")

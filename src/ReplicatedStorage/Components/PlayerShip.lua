@@ -9,9 +9,11 @@ local PlayerShip = Component.new({ Tag = "PlayerShip" })
 function PlayerShip:Construct()
 	if self.Instance:GetAttribute("UserId") == game.Players.LocalPlayer.UserId then
 		self.control = true
-		self.inputAttachment = Instance.new("Attachment", Workspace.Terrain)
+		self.inputAttachment = Instance.new("Attachment")
+		self.inputAttachment.Parent = Workspace.Terrain
 
-		local shipAttachment = Instance.new("Attachment", self.Instance)
+		local shipAttachment = Instance.new("Attachment")
+		shipAttachment.Parent = self.Instance
 
 		local shipToInput = Instance.new("AlignPosition")
 
@@ -29,7 +31,8 @@ function PlayerShip:Construct()
 
 		self.alignPart.Transparency = 1
 
-		local alignAttachment = Instance.new("Attachment", self.alignPart)
+		local alignAttachment = Instance.new("Attachment")
+		alignAttachment.Parent = self.alignPart
 
 		self.shipToAlign = Instance.new("AlignOrientation")
 
@@ -42,7 +45,7 @@ function PlayerShip:Construct()
 	end
 end
 
-local function renderStep(self, dt)
+local function renderStep(self)
 	local velocity = Knit.GetController("PlayerShipMovementController").getInputRelativeToCamera(self.Instance)
 
 	self.Instance.Position = self.Instance.Position * Vector3.new(1, 0, 1)
@@ -63,8 +66,8 @@ function PlayerShip:Start()
 	if self.control then
 		self.RenderPriority = Enum.RenderPriority.Input.Value
 
-		RunService:BindToRenderStep("ShipControl", Enum.RenderPriority.Input.Value, function(dt)
-			renderStep(self, dt)
+		RunService:BindToRenderStep("ShipControl", Enum.RenderPriority.Input.Value, function()
+			renderStep(self)
 		end)
 	end
 end
