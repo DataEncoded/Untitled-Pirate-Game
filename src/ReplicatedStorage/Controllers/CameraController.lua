@@ -40,7 +40,7 @@ end
 
 function CameraController:BindToPart(partToBind)
 	RunService:BindToRenderStep("IsometricCamera", Enum.RenderPriority.Camera.Value + 1, function(dt)
-		Bind(partToBind, dt)
+		Bind(partToBind)
 	end)
 end
 
