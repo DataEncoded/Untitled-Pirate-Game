@@ -68,9 +68,17 @@ function PlayerShipCreatorService:KnitStart()
 		if #returnTaggedAttribute("PlayerShip", "UserId", player.UserId) == 0 then
 			--TODO: Ship Selection
 			local clone = ReplicatedStorage.Assets.Ships.Raft:Clone()
+			local nameUI = clone:FindFirstChild("NameUI")
+
+			if not nameUI then
+				nameUI = ReplicatedStorage.Assets.UI.NameUI:Clone()
+			end
 
 			clone:SetAttribute("UserId", player.UserId)
 			CollectionService:AddTag(clone, "PlayerShip")
+
+			nameUI.Background.NameLabel.Text = player.Name
+			nameUI.Parent = clone
 
 			--TODO: Location Selection
 			clone.Parent = Workspace
