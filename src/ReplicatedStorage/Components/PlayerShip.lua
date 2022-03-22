@@ -4,6 +4,17 @@ local Component = require(game:GetService("ReplicatedStorage").Packages.componen
 
 local RunService = game:GetService("RunService")
 
+local Cannonball = require(script.Parent.Parent.Modules.CannonBall)
+
+--CANNONBALL TESTING CODE--
+local c = Cannonball.new()
+c.ball.Parent = workspace
+
+task.wait(6)
+
+c:fireAtPosition(Vector3.new(0, 0, 0), Vector3.new(-10, 0, -200))
+--END CANNONBALL TESTING CODE--
+
 local PlayerShip = Component.new({ Tag = "PlayerShip" })
 
 function PlayerShip:Construct()
@@ -71,5 +82,7 @@ function PlayerShip:Start()
 		end)
 	end
 end
+
+function PlayerShip:fireCannons(position, cannonType) end
 
 return PlayerShip
