@@ -2,13 +2,27 @@ local Knit = require(game:GetService("ReplicatedStorage").Packages.knit)
 
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
+local QuickFunctions = require(game.ReplicatedStorage.Modules.QuickFunctions)
+
+local ShipCameraConfig = require(game.ReplicatedStorage.Configs.ShipCameraConfig)
 
 local CameraController = Knit.CreateController({
 	Name = "CameraController",
 })
 
-local camera = workspace.CurrentCamera
-local cameraOffset = CFrame.new(30, 50, 30) -- This will change based off what ship they have equipped
+local function getPlayerShip()
+	local playerShip
+	local playerShips = QuickFunctions:returnTaggedAttribute("PlayerShip", "UserId", game.Players.LocalPlayer.UserId)
+
+	for _, ship in ipairs(playerShips) do
+		playerShip = ship
+	end
+
+	return ShipCameraConfig[playerShip.Name]
+end
+
+local cameraOffset
+local camera = workspace.CurrentCamera -- This will change based off what ship they have equipped
 local totalSpinY = 0
 
 local function Bind(partToBind)
@@ -44,7 +58,13 @@ function CameraController:BindToPart(partToBind)
 	end)
 end
 
-function CameraController:KnitStart() end
+function CameraController:KnitStart()
+	local PlayerShipCreatorService = Knit.GetService("PlayerShipCreatorService")
+
+	PlayerShipCreatorService.Respawn:Connect(function()
+		cameraOffset = getPlayerShip()
+	end)
+end
 
 function CameraController:KnitInit() end
 
