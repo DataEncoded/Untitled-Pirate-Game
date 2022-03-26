@@ -2,6 +2,10 @@
 local Cannonball = {}
 Cannonball.__index = Cannonball
 
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local QuickFunctions = require(ReplicatedStorage.Modules.QuickFunctions)
+
 local Promise = require(game:GetService("ReplicatedStorage").Packages.promise)
 
 function Cannonball.new()
@@ -18,10 +22,6 @@ function Cannonball.new()
 	trail.Parent = self.ball
 
 	return self
-end
-
-function quadBezier(t, p0, p1, p2)
-	return (1 - t) ^ 2 * p0 + 2 * (1 - t) * t * p1 + t ^ 2 * p2
 end
 
 --Wrapper for _fireAtPosition's promises
@@ -72,7 +72,7 @@ function Cannonball:_fireAtPosition(startPosition, position)
 				return
 			end
 
-			self.ball:PivotTo(CFrame.new(quadBezier((i / timeToMove), p0, p1, p2)))
+			self.ball:PivotTo(CFrame.new(QuickFunctions:quadBezier((i / timeToMove), p0, p1, p2)))
 			task.wait(0.01)
 		end
 
