@@ -49,6 +49,8 @@ function Cannonball:_fireAtPosition(startPosition, position)
 			cancelBool = true
 		end)
 
+		self.ball.Parent = workspace
+
 		self.ball:PivotTo(CFrame.new(startPosition))
 
 		local p0 = startPosition
@@ -58,11 +60,12 @@ function Cannonball:_fireAtPosition(startPosition, position)
 		local distance = (p0 - p2).Magnitude
 
 		--Do offset calculation
-		local offset = Vector3.new(p2.X - p0.X, distance / 2, p2.Z - p0.Z)
+		local offset = Vector3.new((p2.X - p0.X) / 2, distance / 4, (p2.Z - p0.Z) / 2)
+		offset = offset + p0
 
 		local p1 = offset
 
-		local timeToMove = distance / 100
+		local timeToMove = distance / 200
 
 		for i = 0, timeToMove, 0.01 do
 			if cancelBool then
