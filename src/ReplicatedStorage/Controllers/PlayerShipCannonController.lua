@@ -5,13 +5,15 @@ local CollectionService = game:GetService("CollectionService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 
+
+local Cannonball = require(ReplicatedStorage.Modules.CannonBall)
 local QuickFunctions = require(ReplicatedStorage.Modules.QuickFunctions)
 
 local Camera = workspace.CurrentCamera
 
 --Init in KnitStart to not cause errors
 local PlayerShip
-
+local PlayerShipCannonService
 
 local PlayerShipCannonController = Knit.CreateController({
 	Name = "PlayerShipCannonController",
@@ -174,7 +176,7 @@ local function fireCannon(_, inputState, _)
         if PlayerShipCannonController.targetedShip and localPlayerShip  then
             local playerShip = PlayerShip:FromInstance(localPlayerShip)
 
-            playerShip:fireCannons(PlayerShipCannonController.targetedShip.Position)
+            PlayerShipCannonService.Fire:Fire(PlayerShipCannonController.targetedShip.Position)
         end
     end
 end
@@ -198,7 +200,12 @@ function PlayerShipCannonController:KnitStart()
     PlayerShipCannonController.targetIcon = ReplicatedStorage.Assets.UI.TargetUI:Clone()
     PlayerShip = require(ReplicatedStorage.Components.PlayerShip)
 
+    PlayerShipCannonService = Knit.GetService("PlayerShipCannonService")
 
+    PlayerShipCannonService.Fire:Connect(function(startPos, pos)
+        local ball = Cannonball.new()
+        ball:fireAtPosition(startPos, pos)
+    end)
 end
 
 return PlayerShipCannonController
