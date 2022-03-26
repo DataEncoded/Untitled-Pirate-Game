@@ -4,16 +4,7 @@ local Component = require(game:GetService("ReplicatedStorage").Packages.componen
 
 local RunService = game:GetService("RunService")
 
-local Cannonball = require(script.Parent.Parent.Modules.CannonBall)
-
---CANNONBALL TESTING CODE--
-local c = Cannonball.new()
-c.ball.Parent = workspace
-
-task.wait(6)
-
-c:fireAtPosition(Vector3.new(0, 0, 0), Vector3.new(-10, 0, -200))
---END CANNONBALL TESTING CODE--
+local PlayerShipCannonController = Knit.GetController("PlayerShipCannonController")
 
 local PlayerShip = Component.new({ Tag = "PlayerShip" })
 
@@ -80,6 +71,15 @@ function PlayerShip:Start()
 		RunService:BindToRenderStep("ShipControl", Enum.RenderPriority.Input.Value, function()
 			renderStep(self)
 		end)
+		PlayerShipCannonController:enable()
+	end
+end
+
+function PlayerShip:Stop()
+	if self.control then
+		RunService:UnbindFromRenderStep("ShipControl")
+
+		PlayerShipCannonController:disable()
 	end
 end
 
