@@ -3,8 +3,11 @@ local Workspace = game:GetService("Workspace")
 local Component = require(game:GetService("ReplicatedStorage").Packages.component)
 
 local RunService = game:GetService("RunService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local PlayerShipCannonController = Knit.GetController("PlayerShipCannonController")
+
+local CannonBallModule = require(ReplicatedStorage.Modules.CannonBall)
 
 local PlayerShip = Component.new({ Tag = "PlayerShip" })
 
@@ -83,6 +86,9 @@ function PlayerShip:Stop()
 	end
 end
 
-function PlayerShip:fireCannons(position, cannonType) end
+function PlayerShip:fireCannons(position, cannonType)
+	local Cannonball = CannonBallModule.new()
+	Cannonball:fireAtPosition(self.Instance.Position, position)
+end
 
 return PlayerShip
