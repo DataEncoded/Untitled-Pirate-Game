@@ -43,42 +43,24 @@ end
 
 --Wrapped around to prevent mishandeling
 function Cannonball:_fireAtPosition(startPosition, position)
-	return Promise.new(function(resolve, _, cancel)
-		local cancelBool = false
-		cancel(function()
-			cancelBool = true
-		end)
 
+	local function startFunc()
 		self.ball.Parent = workspace
-
+	
 		self.ball:PivotTo(CFrame.new(startPosition))
+	end
 
-		local p0 = startPosition
-		local p2 = position
+	local function loopFunc(quadPos)
 
-		--Get magnitude
-		local distance = (p0 - p2).Magnitude
+		self.ball:PivotTo(CFrame.new(quadPos))
+	end
 
-		--Do offset calculation
-		local offset = Vector3.new((p2.X - p0.X) / 2, distance / 4, (p2.Z - p0.Z) / 2)
-		offset = offset + p0
-
-		local p1 = offset
-
-		local timeToMove = distance / 200
-
-		for i = 0, timeToMove, 0.01 do
-			if cancelBool then
-				return
-			end
-
-			self.ball:PivotTo(CFrame.new(QuickFunctions.quadBezier((i / timeToMove), p0, p1, p2)))
-			task.wait(0.01)
-		end
+	local function endFunc()
 
 		self.ball:PivotTo(CFrame.new(position))
-		resolve()
-	end)
+	end
+
+	return QuickFunctions.loopOverQuad(startPosition, position, startFunc, loopFunc, endFunc)
 end
 
 function Cannonball:Destroy()
