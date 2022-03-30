@@ -19,7 +19,6 @@ local CollectionService = game:GetService("CollectionService")
         Table of objects that match the parameters
 
 ]]
---
 
 function QuickFunctions.returnTaggedAttribute(tag: string, attribute: string, value: any): { PVInstance }
 	local tagged = CollectionService:GetTagged(tag)
