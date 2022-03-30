@@ -21,7 +21,7 @@ local CollectionService = game:GetService("CollectionService")
 ]]
 --
 
-function QuickFunctions:returnTaggedAttribute(tag: string, attribute: string, value: any): { PVInstance }
+function QuickFunctions.returnTaggedAttribute(tag: string, attribute: string, value: any): { PVInstance }
 	local tagged = CollectionService:GetTagged(tag)
 
 	local matches = {}
@@ -35,7 +35,7 @@ function QuickFunctions:returnTaggedAttribute(tag: string, attribute: string, va
 	return matches
 end
 
-function QuickFunctions:quadBezier(t, p0, p1, p2)
+function QuickFunctions.quadBezier(t, p0, p1, p2)
 	return (1 - t) ^ 2 * p0 + 2 * (1 - t) * t * p1 + t ^ 2 * p2
 end
 
