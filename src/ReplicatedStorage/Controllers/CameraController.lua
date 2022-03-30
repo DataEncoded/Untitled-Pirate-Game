@@ -12,7 +12,7 @@ local CameraController = Knit.CreateController({
 
 local function getPlayerShip()
 	local playerShip
-	local playerShips = QuickFunctions:returnTaggedAttribute("PlayerShip", "UserId", game.Players.LocalPlayer.UserId)
+	local playerShips = QuickFunctions.returnTaggedAttribute("PlayerShip", "UserId", game.Players.LocalPlayer.UserId)
 
 	for _, ship in ipairs(playerShips) do
 		playerShip = ship

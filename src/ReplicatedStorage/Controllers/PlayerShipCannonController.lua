@@ -22,7 +22,7 @@ local PlayerShipCannonController = Knit.CreateController({
 })
 
 local function getPlayerShip(): PVInstance | nil
-    local playerShip = QuickFunctions:returnTaggedAttribute("PlayerShip", "UserId", game.Players.LocalPlayer.UserId)
+    local playerShip = QuickFunctions.returnTaggedAttribute("PlayerShip", "UserId", game.Players.LocalPlayer.UserId)
     
     --If player ship acting strange, exit function
     if #playerShip ~= 1 then

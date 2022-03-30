@@ -72,7 +72,7 @@ function Cannonball:_fireAtPosition(startPosition, position)
 				return
 			end
 
-			self.ball:PivotTo(CFrame.new(QuickFunctions:quadBezier((i / timeToMove), p0, p1, p2)))
+			self.ball:PivotTo(CFrame.new(QuickFunctions.quadBezier((i / timeToMove), p0, p1, p2)))
 			task.wait(0.01)
 		end
 

@@ -17,7 +17,7 @@ function PlayerShipCannonService:KnitStart()
     self.Client.Fire:Connect(function(player, position)
         if position then
             --TODO: Check that the cannon is within the desired angle
-            local playerShips = QuickFunctions:returnTaggedAttribute("PlayerShip", "UserId", player.UserId)
+            local playerShips = QuickFunctions.returnTaggedAttribute("PlayerShip", "UserId", player.UserId)
 
             if #playerShips == 1 then
                 self.Client.Fire:FireAll(playerShips[1].Position, position)

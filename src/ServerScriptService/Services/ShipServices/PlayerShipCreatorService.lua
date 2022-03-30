@@ -22,7 +22,7 @@ local PlayerShipCreatorService = Knit.CreateService({
 --Remove ships of players who are leaving
 function PlayerShipCreatorService:KnitInit()
 	Players.PlayerRemoving:Connect(function(player)
-		local playerShips = QuickFunctions:returnTaggedAttribute("PlayerShip", "UserId", player.UserId)
+		local playerShips = QuickFunctions.returnTaggedAttribute("PlayerShip", "UserId", player.UserId)
 
 		for _, ship in ipairs(playerShips) do
 			ship:Destroy()
@@ -35,7 +35,7 @@ end
 --Listen to the respawn signal and ensure a ship can be spawned
 function PlayerShipCreatorService:KnitStart()
 	self.Client.Respawn:Connect(function(player)
-		if #QuickFunctions:returnTaggedAttribute("PlayerShip", "UserId", player.UserId) == 0 then
+		if #QuickFunctions.returnTaggedAttribute("PlayerShip", "UserId", player.UserId) == 0 then
 			--TODO: Ship Selection
 			local clone = ReplicatedStorage.Assets.Ships.Raft:Clone()
 			local nameUI = clone:FindFirstChild("NameUI")
