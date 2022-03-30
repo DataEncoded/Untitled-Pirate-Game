@@ -50,9 +50,9 @@ end
     Parameters:
         [Vector3]    startPos   The place that the quadBezier starts
         [Vector3]    endPos     The place that the quadBezier ends
-        [function]   startFunc  A function that's ran before the loop
-        [function]   loopFunc   A function that's ran in the loop
-        [function]   loopFunc   A function that's ran after the loop
+        [function]   startFunc  A function that's ran before the loop, no parameters, (optional) return bool if function should cancel
+        [function]   loopFunc   A function that's ran in the loop, position of quad parameter, (optional) return bool if function should cancel
+        [function]   loopFunc   A function that's ran after the loop, no parameters
 
     Returns:
         Promise of the code allowing cancellations
@@ -62,8 +62,8 @@ end
 function QuickFunctions.loopOverQuad(
 	startPos: Vector3,
 	endPos: Vector3,
-	startFunc: nil | () -> nil,
-	loopFunc: nil | (Vector3) -> nil,
+	startFunc: nil | () -> nil | bool,
+	loopFunc: nil | (Vector3) -> nil | bool,
 	endFunc: nil | () -> nil
 )
 	return Promise.new(function(resolve, _, cancel)
@@ -75,7 +75,9 @@ function QuickFunctions.loopOverQuad(
 		end)
 
 		if startFunc then
-			startFunc()
+			if startFunc() then
+                cancelBool = true
+            end
 		end
 
         --Set alias for start and end position for simplicity
@@ -104,7 +106,9 @@ function QuickFunctions.loopOverQuad(
 
             --If there is a loopFunc, pass the parameter of the quadBezier location
 			if loopFunc then
-				loopFunc(QuickFunctions.quadBezier((i / timeToMove), p0, p1, p2))
+				if loopFunc(QuickFunctions.quadBezier((i / timeToMove), p0, p1, p2)) then
+                    cancelBool = true
+                end
 			end
 
             --The loop is normalized to increase by 0.01 seconds so only wait that
