@@ -123,4 +123,44 @@ function QuickFunctions.loopOverQuad(
 	end)
 end
 
+--[[
+    hitDetection
+
+    Description:
+        returns hit(s) based on position and ensures they have the tag specified
+		Uses GetPartBoundsInBox, with params
+
+    Parameters:
+        [Vector3]    		position   	The place to check for hits
+        [OverlapParams]    	filter     	Overlap params that are given to GetPartBoundsInBox
+        [String]			tag			Tag that the part needs to have the function return it
+
+    Returns:
+        First match or nil
+
+]]
+
+function QuickFunctions.hitDetection(position: Vector3, filter: nil | OverlapParams, tag: nil | String ): PVInstance | nil
+	local hits
+
+	if not filter then
+		hits = workspace:GetPartBoundsInBox(CFrame.new(position), Vector3.new(3,3,3))
+	else
+		hits = workspace:GetPartBoundsInBox(CFrame.new(position), Vector3.new(3,3,3), filter)
+	end
+
+	for _, hit in ipairs(hits) do
+		--If needs tag then check tag, if not just return
+		if tag then
+			if CollectionService:HasTag(hit, "PlayerShip") then
+
+				return hit
+			end
+		else
+
+			return hit
+		end
+	end
+end
+
 return QuickFunctions
