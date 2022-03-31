@@ -152,7 +152,7 @@ function QuickFunctions.hitDetection(position: Vector3, filter: nil | OverlapPar
 	for _, hit in ipairs(hits) do
 		--If needs tag then check tag, if not just return
 		if tag then
-			if CollectionService:HasTag(hit, "PlayerShip") then
+			if CollectionService:HasTag(hit, tag) then
 
 				return hit
 			end
