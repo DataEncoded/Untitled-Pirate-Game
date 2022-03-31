@@ -30,7 +30,7 @@ function PlayerShip:Construct()
 		shipToInput.Responsiveness = 25
 
 		self.alignPart = Instance.new("Part")
-		self.alignPart.Parent = workspace
+		self.alignPart.Parent = self.Instance
 
 		self.alignPart.Anchored = true
 
