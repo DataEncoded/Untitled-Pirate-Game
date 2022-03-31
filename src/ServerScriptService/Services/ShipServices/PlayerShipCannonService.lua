@@ -40,8 +40,8 @@ function PlayerShipCannonService:KnitStart()
             local playerShips = QuickFunctions.returnTaggedAttribute("PlayerShip", "UserId", player.UserId)
 
             if #playerShips == 1 then
-                self.Client.Fire:FireAll(playerShips[1].Position, position, playerShips[1])
-                hitDetection(playerShips, playerShips[1].Position, position)
+                self.Client.Fire:FireAll(playerShips[1]:GetPivot().Position, position, playerShips[1])
+                hitDetection(playerShips, playerShips[1]:GetPivot().Position, position)
             end
 
         end

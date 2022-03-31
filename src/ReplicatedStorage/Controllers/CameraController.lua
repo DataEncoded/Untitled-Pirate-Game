@@ -47,7 +47,7 @@ local function Bind(partToBind)
 	end
 
 	totalSpinY += deltaX
-	local rootCFrame = CFrame.new(root.Position) * CFrame.Angles(0, math.rad(totalSpinY), 0)
+	local rootCFrame = CFrame.new(root:GetPivot().Position) * CFrame.Angles(0, math.rad(totalSpinY), 0)
 	local cameraPosition = (rootCFrame * cameraOffset).Position
 	camera.CFrame = CFrame.lookAt(cameraPosition, rootCFrame.Position)
 end

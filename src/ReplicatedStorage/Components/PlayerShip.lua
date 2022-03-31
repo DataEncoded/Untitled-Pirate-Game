@@ -18,7 +18,7 @@ function PlayerShip:Construct()
 		self.inputAttachment.Parent = Workspace.Terrain
 
 		local shipAttachment = Instance.new("Attachment")
-		shipAttachment.Parent = self.Instance
+		shipAttachment.Parent = self.Instance.PrimaryPart
 
 		local shipToInput = Instance.new("AlignPosition")
 
@@ -46,21 +46,23 @@ function PlayerShip:Construct()
 
 		self.shipToAlign.Parent = self.Instance
 
-		self.Instance.CanCollide = false
+		self.Instance.PrimaryPart.CanCollide = false
 	end
 end
 
 local function renderStep(self)
-	local velocity = Knit.GetController("PlayerShipMovementController").getInputRelativeToCamera(self.Instance)
+	local velocity = Knit.GetController("PlayerShipMovementController").getInputRelativeToCamera(self.Instance.PrimaryPart)
 
-	self.Instance.Position = self.Instance.Position * Vector3.new(1, 0, 1)
+	local selfPivot = self.Instance:GetPivot().Position
 
-	local position = velocity * Vector3.new(5, 1, 5) + self.Instance.Position
+	self.Instance:PivotTo(CFrame.new(selfPivot * Vector3.new(1, 0, 1)) * self.Instance:GetPivot().Rotation)
+
+	local position = velocity * Vector3.new(5, 1, 5) + selfPivot
 
 	self.inputAttachment.WorldCFrame = CFrame.new(position, velocity)
 
 	if not (Knit.GetController("PlayerShipMovementController").moveVector() == Vector3.new(0, 0, 0)) then
-		self.alignPart.CFrame = CFrame.lookAt(self.Instance.Position, self.inputAttachment.WorldPosition)
+		self.alignPart.CFrame = CFrame.lookAt(selfPivot, self.inputAttachment.WorldPosition)
 			* CFrame.Angles(0, math.rad(180), 0)
 	else
 		self.alignPart.Orientation = self.alignPart.Orientation * Vector3.new(0, 1, 1)
@@ -88,7 +90,7 @@ end
 
 function PlayerShip:fireCannons(position, cannonType)
 	local Cannonball = CannonBallModule.new()
-	Cannonball:fireAtPosition(self.Instance.Position, position)
+	Cannonball:fireAtPosition(self.Instance:GetPivot().Position, position)
 end
 
 return PlayerShip

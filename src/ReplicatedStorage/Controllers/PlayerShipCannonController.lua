@@ -52,13 +52,13 @@ local function getNearShips(): { PVInstance }
         if not (v == playerShip) then
 
             --bounds is a bool value depending on if the value is within the screen
-            local _, bounds = Camera:WorldToScreenPoint(v.Position)
+            local _, bounds = Camera:WorldToScreenPoint(v:GetPivot().Position)
 
             if bounds then
 
-                local shipPosition = v.Position
+                local shipPosition = v:GetPivot().Position
 
-                distanceDict[v] = (playerShip.Position - shipPosition).Magnitude
+                distanceDict[v] = (playerShip:GetPivot().Position - shipPosition).Magnitude
                 
             end
         end
@@ -160,7 +160,7 @@ end
 local function watchTargetedShipLeave()
     if PlayerShipCannonController.targetedShip then
 
-        local _, bounds = Camera:WorldToScreenPoint(PlayerShipCannonController.targetedShip.Position)
+        local _, bounds = Camera:WorldToScreenPoint(PlayerShipCannonController.targetedShip:GetPivot().Position)
 
         if not bounds then
             updateTargetedShip(nil)
@@ -174,7 +174,7 @@ local function fireCannon(_, inputState, _)
         if PlayerShipCannonController.targetedShip and localPlayerShip  then
             local playerShip = PlayerShip:FromInstance(localPlayerShip)
 
-            PlayerShipCannonService.Fire:Fire(PlayerShipCannonController.targetedShip.Position)
+            PlayerShipCannonService.Fire:Fire(PlayerShipCannonController.targetedShip:GetPivot().Position)
         end
     end
 end

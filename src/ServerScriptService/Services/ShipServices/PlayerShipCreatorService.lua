@@ -53,9 +53,13 @@ function PlayerShipCreatorService:KnitStart()
 			--TODO: Location Selection
 			clone.Parent = Workspace
 
-			clone.Anchored = false
+			clone.PrimaryPart.Anchored = false
 
-			clone:SetNetworkOwner(player)
+			for _, v in ipairs(clone:GetDescendants()) do
+				if v:IsA("BasePart") then
+					v:SetNetworkOwner(player)
+				end
+			end
 
 			self.Client.Respawn:Fire(player, clone)
 		end
