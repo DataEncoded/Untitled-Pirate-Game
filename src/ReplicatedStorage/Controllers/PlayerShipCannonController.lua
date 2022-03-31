@@ -160,8 +160,6 @@ end
 local function watchTargetedShipLeave()
     if PlayerShipCannonController.targetedShip then
 
-        --print("Checking")
-
         local _, bounds = Camera:WorldToScreenPoint(PlayerShipCannonController.targetedShip.Position)
 
         if not bounds then
@@ -202,9 +200,13 @@ function PlayerShipCannonController:KnitStart()
 
     PlayerShipCannonService = Knit.GetService("PlayerShipCannonService")
 
-    PlayerShipCannonService.Fire:Connect(function(startPos, pos)
+    PlayerShipCannonService.Fire:Connect(function(startPos, pos, ignore)
+        local params = OverlapParams.new()
+        params.FilterType = Enum.RaycastFilterType.Blacklist
+        params.FilterDescendantsInstances = {ignore}
+
         local ball = Cannonball.new()
-        ball:fireAtPosition(startPos, pos)
+        ball:fireAtPosition(startPos, pos, false, params)
     end)
 end
 

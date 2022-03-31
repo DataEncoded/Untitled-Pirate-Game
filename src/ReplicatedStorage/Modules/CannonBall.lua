@@ -25,8 +25,8 @@ function Cannonball.new()
 end
 
 --Wrapper for _fireAtPosition's promises
-function Cannonball:fireAtPosition(startPosition: Vector3, position: Vector3, keepAlive: bool | nil)
-	self.firePromise = self:_fireAtPosition(startPosition, position)
+function Cannonball:fireAtPosition(startPosition: Vector3, position: Vector3, keepAlive: bool | nil, params: OverlapParams)
+	self.firePromise = self:_fireAtPosition(startPosition, position, params)
 
 	if not keepAlive then
 		self.fireWatch = self.firePromise:andThen(function()
@@ -42,7 +42,9 @@ function Cannonball:stopFire()
 end
 
 --Wrapped around to prevent mishandeling
-function Cannonball:_fireAtPosition(startPosition, position)
+function Cannonball:_fireAtPosition(startPosition, position, overlapParams)
+	overlapParams.FilterDescendantsInstances = {overlapParams.FilterDescendantsInstances[1], self.ball}
+
 
 	local function startFunc()
 		self.ball.Parent = workspace
@@ -53,11 +55,22 @@ function Cannonball:_fireAtPosition(startPosition, position)
 	local function loopFunc(quadPos)
 
 		self.ball:PivotTo(CFrame.new(quadPos))
+
+		if QuickFunctions.hitDetection(quadPos, overlapParams) then
+			--TODO: Add explosion effect
+
+			self:Destroy()
+			return true
+		end
+
 	end
 
 	local function endFunc()
 
-		self.ball:PivotTo(CFrame.new(position))
+		--Ensure automatic killing hasn't already cleaned up
+		if self and self.ball then
+			self.ball:PivotTo(CFrame.new(position))
+		end
 	end
 
 	return QuickFunctions.loopOverQuad(startPosition, position, startFunc, loopFunc, endFunc)

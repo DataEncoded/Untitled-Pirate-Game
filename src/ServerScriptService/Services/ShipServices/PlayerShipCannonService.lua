@@ -21,7 +21,7 @@ local function hitDetection(playerShip, startPos, endPos)
 
 
     local function loopFunction(quadPosition)
-        local result = QuickFunctions.hitDetection(quadPosition, params, "PlayerShip")
+        local result = QuickFunctions.hitDetection(quadPosition, params)
         if result then
             return true
         end
@@ -40,7 +40,7 @@ function PlayerShipCannonService:KnitStart()
             local playerShips = QuickFunctions.returnTaggedAttribute("PlayerShip", "UserId", player.UserId)
 
             if #playerShips == 1 then
-                self.Client.Fire:FireAll(playerShips[1].Position, position)
+                self.Client.Fire:FireAll(playerShips[1].Position, position, playerShips[1])
                 hitDetection(playerShips, playerShips[1].Position, position)
             end
 
