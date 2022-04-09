@@ -36,7 +36,7 @@ end
 --If something breaks after changing the ships from meshes to models, it's this.
 local function getNearShips(): { PVInstance }
     --Heavily dependant on PlayerShip tag
-    local ships = CollectionService:GetTagged("PlayerShip")
+    local ships = CollectionService:GetTagged("Ship")
 
     local playerShip = getPlayerShip()
     
