@@ -2,8 +2,15 @@
 local Knit = require(game:GetService("ReplicatedStorage").Packages.knit)
 local Workspace = game:GetService("Workspace")
 local CollectionService = game:GetService("CollectionService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local Component = require(game:GetService("ReplicatedStorage").Packages.component)
 
 local QuickFunctions = require(game.ReplicatedStorage.Modules.QuickFunctions)
+
+local Components = ReplicatedStorage.Components
+local shipComponent
+
 
 local PlayerShipCannonService = Knit.CreateService({
 	Name = "PlayerShipCannonService",
@@ -23,6 +30,14 @@ local function hitDetection(playerShip, startPos, endPos)
     local function loopFunction(quadPosition)
         local result = QuickFunctions.hitDetection(quadPosition, params)
         if result then
+            
+            local ship = shipComponent:FromInstance(result)
+
+            if ship then
+                --TODO: CANNON DAMAGE CHANGING DEPENDING ON CUSTOMIZATION
+                ship:takeDamage(5)
+            end
+
             return true
         end
     end
@@ -46,6 +61,8 @@ function PlayerShipCannonService:KnitStart()
 
         end
     end)
+    
+    shipComponent = require(Components.Ship)
 
 end
 
