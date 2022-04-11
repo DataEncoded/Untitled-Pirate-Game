@@ -7,6 +7,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local PlayerShipCannonController = Knit.GetController("PlayerShipCannonController")
 
+local ShipAlignConfig = require(ReplicatedStorage.Configs.ShipAlignConfig)
 local CannonBallModule = require(ReplicatedStorage.Modules.CannonBall)
 
 local PlayerShip = Component.new({ Tag = "PlayerShip" })
@@ -19,6 +20,12 @@ function PlayerShip:Construct()
 
 		local shipAttachment = Instance.new("Attachment")
 		shipAttachment.Parent = self.Instance.PrimaryPart
+
+		local configRef = ShipAlignConfig[self.Instance.Name]
+
+		if configRef and configRef["Attachment"] then
+			shipAttachment.Orientation = configRef["Attachment"]
+		end
 
 		local shipToInput = Instance.new("AlignPosition")
 
@@ -42,6 +49,10 @@ function PlayerShip:Construct()
 
 		self.shipToAlign.Attachment0 = shipAttachment
 		self.shipToAlign.Attachment1 = alignAttachment
+
+		if configRef and configRef["Torque"] then
+			self.shipToAlign.MaxTorque = configRef["Torque"]
+		end
 
 		self.shipToAlign.Parent = self.Instance
 
