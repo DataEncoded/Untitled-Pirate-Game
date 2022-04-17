@@ -206,6 +206,12 @@ function PlayerShipCannonController:KnitStart()
         params.FilterDescendantsInstances = {ignore}
 
         local ball = Cannonball.new()
+
+        if ignore == getPlayerShip() then
+            --Firing shot locally as localship is actually shooting
+            startPos = getPlayerShip():GetPivot().Position
+        end
+
         ball:fireAtPosition(startPos, pos, false, params)
     end)
 end
