@@ -37,10 +37,15 @@ function PlayerShip:Construct()
 		shipToInput.Responsiveness = 25
 
 		self.alignPart = Instance.new("Part")
-		self.alignPart.Parent = workspace
 		self.alignPart.Anchored = true
 
+		self.alignPart.CanCollide = false
+		self.alignPart.CanTouch = false
+		self.alignPart.CanQuery = false
+
 		self.alignPart.Transparency = 1
+
+		self.alignPart.Parent = workspace
 
 		local alignAttachment = Instance.new("Attachment")
 		alignAttachment.Parent = self.alignPart
