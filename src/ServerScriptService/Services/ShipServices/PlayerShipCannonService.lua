@@ -1,10 +1,10 @@
 --Get Packages
 local Knit = require(game:GetService("ReplicatedStorage").Packages.knit)
-local Workspace = game:GetService("Workspace")
-local CollectionService = game:GetService("CollectionService")
+--local Workspace = game:GetService("Workspace")
+--local CollectionService = game:GetService("CollectionService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local Component = require(game:GetService("ReplicatedStorage").Packages.component)
+--local Component = require(game:GetService("ReplicatedStorage").Packages.component)
 local Promise = require(game:GetService("ReplicatedStorage").Packages.promise)
 
 local QuickFunctions = require(game.ReplicatedStorage.Modules.QuickFunctions)
@@ -44,7 +44,7 @@ local function hitDetection(playerShip, startPos, endPos)
     end
 
 
-    local promise = QuickFunctions.loopOverQuad(startPos, endPos, nil, loopFunction)
+    QuickFunctions.loopOverQuad(startPos, endPos, nil, loopFunction)
     
 end
 
@@ -54,10 +54,10 @@ function PlayerShipCannonService:KnitStart()
 
     --Wait and listen for cancel, and when cooldown is active add player to cooldown table
     local function playerFireCooldown(player: Player, waitTime: number)
-        return Promise.new(function(resolve, reject, cancel)
+        return Promise.new(function(resolve, _, cancel)
             cooldown[player] = true
             
-            for i = 0, waitTime, 0.1 do
+            for _ = 0, waitTime, 0.1 do
                 task.wait(0.1)
                 if cancel() then 
                     break 
@@ -65,6 +65,7 @@ function PlayerShipCannonService:KnitStart()
             end
 
             cooldown[player] = nil
+            resolve()
         end)
     end
 
