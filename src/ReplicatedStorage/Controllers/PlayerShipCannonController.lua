@@ -1,5 +1,7 @@
 local Knit = require(game:GetService("ReplicatedStorage").Packages.knit)
 
+local Workspace = game:GetService("Workspace")
+local UserInputService = game:GetService("UserInputService")
 local ContextActionService = game:GetService("ContextActionService")
 local CollectionService = game:GetService("CollectionService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -33,126 +35,25 @@ local function getPlayerShip(): PVInstance | nil
 
 end
 
---If something breaks after changing the ships from meshes to models, it's this.
-local function getNearShips(): { PVInstance }
-    --Heavily dependant on PlayerShip tag
-    local ships = CollectionService:GetTagged("Ship")
-
-    local playerShip = getPlayerShip()
-    
-    --If player ship acting strange, exit function
-    if not playerShip then
-        return {}
-    end
-
-    local distanceDict = {}
-    local results = {}
-
-    for _, v in ipairs(ships) do
-        if not (v == playerShip) then
-
-            --bounds is a bool value depending on if the value is within the screen
-            local _, bounds = Camera:WorldToScreenPoint(v:GetPivot().Position)
-
-            if bounds then
-
-                local shipPosition = v:GetPivot().Position
-
-                distanceDict[v] = (playerShip:GetPivot().Position - shipPosition).Magnitude
-                
-            end
-        end
-    end
-
-    --Now loop through distance dict and construct results
-
-    for ship, distance in pairs(distanceDict) do
-        if #results > 0 then
-
-            local success = false
-
-            for i = 1, #results do
-                local targetShip = results[i]
-
-                if distance <= distanceDict[targetShip] then
-
-                    table.insert(results, i, ship)
-
-                    success = true
-
-                    break
-                end
-            end
-
-            --Furthest Distance, insert at end
-            if not success then 
-                table.insert(results, ship)
-            end
-
-        else
-            
-            table.insert(results, ship)
-        end
-    end
-
-    --Finally return result after all that filtering
-    return results
-
-end
-
 local function updateTargetedShip(target)
     PlayerShipCannonController.targetedShip = target
     PlayerShipCannonController.targetIcon.Parent = target
 end
 
-local function watchSwitchInput(actionName, inputState, _)
-    if inputState == Enum.UserInputState.Begin then
-        if actionName == "LeftSwitch" or actionName == "RightSwitch" then
-            local ships = getNearShips()
+--Takes input, raycasts it, attempts to find a model with a ship tag at hit position. If it finds it update targeted ship
+local function watchTargetInput(inputPosition)
+    local unitRay = Camera:ViewportPointToRay(inputPosition.X, inputPosition.Y)
+    
+    --TODO: Add water to raycast blacklist
+    local hit = Workspace:Raycast(unitRay.Origin, unitRay.Direction * 500)
+    if not hit or not hit.Instance then
+        return
+    end
 
-            --Variables for reducing code-paste
-            local overflow  --Used to determine what the selection should go to when moving to the opposite side
-            local default   --Used when there is no targeted ship
-            local move      --Used when there is a targeted ship
+    local target = hit.Instance:FindFirstAncestorOfClass("Model")
 
-            if actionName == "LeftSwitch" then
-                overflow = #ships
-                default = 1
-                move = function(i)
-                    return i - 1
-                end
-            elseif actionName == "RightSwitch" then
-                overflow = 1
-                default = #ships
-                move = function(i)
-                    return i + 1
-                end
-            end
-
-            if #ships > 0 then
-                if not PlayerShipCannonController.targetedShip then
-                    updateTargetedShip(ships[default])
-                else
-                    
-                    for i, v in ipairs(ships) do
-                        if v == PlayerShipCannonController.targetedShip then
-                            if i == default then
-
-                                --At the bottom/top, move to the top/bottom
-                                updateTargetedShip(ships[overflow])
-                                break
-
-                            else
-                                
-                                --Not at bottom/top, simply move left/right
-                                updateTargetedShip(ships[move(i)])
-                                break
-                            end
-                        end
-                    end
-                end
-            end        
-        end
+    if CollectionService:HasTag(target, "Ship") or CollectionService:HasTag(target, "PlayerShip") then
+        updateTargetedShip(target)
     end
 end
 
@@ -172,25 +73,42 @@ local function fireCannon(_, inputState, _)
     if inputState == Enum.UserInputState.Begin then
         local localPlayerShip = getPlayerShip()
         if PlayerShipCannonController.targetedShip and localPlayerShip  then
-            local playerShip = PlayerShip:FromInstance(localPlayerShip)
+            local _ = PlayerShip:FromInstance(localPlayerShip)
 
             PlayerShipCannonService.Fire:Fire(PlayerShipCannonController.targetedShip:GetPivot().Position)
         end
     end
 end
 
+local function inputLocationFormat(locationOrInput, processed)
+    if not processed then
+        --Don't handle processed input
+        if typeof(locationOrInput) == "Vector3" then
+            --Location, not input. Simply pass input through
+            watchTargetInput(locationOrInput)
+        elseif locationOrInput["UserInputType"] then
+            --Input, check if it's a mouse
+            if locationOrInput.UserInputType == Enum.UserInputType.MouseButton1 then
+                --It's a mouse, send the mouse location
+                watchTargetInput(UserInputService:GetMouseLocation())
+            end
+        end
+    end
+end
+
 function PlayerShipCannonController:enable()
     RunService:BindToRenderStep("TargetShipLeave", 2000, watchTargetedShipLeave) --Last
-    ContextActionService:BindAction("LeftSwitch", watchSwitchInput, false, Enum.KeyCode.Q, Enum.KeyCode.Left, Enum.KeyCode.ButtonL1)
-    ContextActionService:BindAction("RightSwitch", watchSwitchInput, false, Enum.KeyCode.E, Enum.KeyCode.Right, Enum.KeyCode.ButtonR1)
+    --Use userinputservice so that touch works
+    self.touchInput = UserInputService.TouchTapInWorld:Connect(inputLocationFormat)
+    self.mouseInput = UserInputService.InputBegan:Connect(inputLocationFormat)
     ContextActionService:BindAction("Fire", fireCannon, false, Enum.KeyCode.Space, Enum.KeyCode.ButtonR2)
 
 end
 
 function PlayerShipCannonController:disable()
     RunService:UnbindFromRenderStep("TargetShipLeave")
-    ContextActionService:UnbindAction("LeftSwitch")
-    ContextActionService:UnbindAction("RightSwitch")
+    self.touchInput:Disconnect()
+    self.mouseInput:Disconnect()
     ContextActionService:UnbindAction("Fire")
 end
 
