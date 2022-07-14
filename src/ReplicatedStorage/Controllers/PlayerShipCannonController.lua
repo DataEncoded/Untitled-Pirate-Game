@@ -79,7 +79,7 @@ end
 local function inputLocationFormat(locationOrInput, processed)
 	if not processed then
 		--Don't handle processed input
-		if typeof(locationOrInput) == "Vector3" then
+		if typeof(locationOrInput) == "Vector2" then
 			--Location, not input. Simply pass input through
 			watchTargetInput(locationOrInput)
 		elseif locationOrInput["UserInputType"] then
